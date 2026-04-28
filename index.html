@@ -1,12 +1,331 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site IA </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>✨ Minha Página Simples | Estilo Próprio</title>
+    
+    <!-- ESTILOS GLOBAIS INCORPORADOS (CSS dentro do HTML) -->
+    <style>
+        /* RESET básico e estilos gerais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(145deg, #f7f9fc 0%, #eef2f5 100%);
+            color: #1e2a3a;
+            line-height: 1.5;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+        }
+
+        /* container principal responsivo */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0,0,0,0.05);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        /* cabeçalho elegante */
+        .cabecalho {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            color: white;
+        }
+
+        .cabecalho h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .cabecalho p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* conteúdo principal em grid */
+        .conteudo {
+            padding: 2.5rem 2rem;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* cards com efeito sutil */
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 1.6rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.25s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.15);
+            border-color: #cbd5e1;
+        }
+
+        .card-icone {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            display: inline-block;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #0f2b3d;
+        }
+
+        .card p {
+            color: #2c3e4e;
+            margin-bottom: 1.2rem;
+            font-size: 0.95rem;
+        }
+
+        .tag {
+            background: #eef2ff;
+            color: #1e3a8a;
+            padding: 0.25rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* área de destaque / depoimento */
+        .destaque {
+            background: #eef3fa;
+            border-radius: 1.5rem;
+            padding: 1.8rem;
+            margin-top: 1rem;
+            border-left: 6px solid #2a5298;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .destaque-texto {
+            flex: 2;
+        }
+
+        .destaque-texto h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #0a2540;
+        }
+
+        .destaque-texto p {
+            color: #2c3e66;
+        }
+
+        .btn {
+            background: #1e3c72;
+            border: none;
+            color: white;
+            padding: 0.7rem 1.6rem;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-family: inherit;
+        }
+
+        .btn:hover {
+            background: #0f2b4f;
+            transform: scale(0.97);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        /* rodapé charmoso */
+        .rodape {
+            background: #f1f5f9;
+            text-align: center;
+            padding: 1.6rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+            color: #4a5b6e;
+        }
+
+        /* responsividade fina */
+        @media (max-width: 680px) {
+            body {
+                padding: 1rem;
+            }
+            .cabecalho h1 {
+                font-size: 1.8rem;
+            }
+            .conteudo {
+                padding: 1.5rem;
+            }
+            .grid-cards {
+                gap: 1.2rem;
+            }
+        }
+
+        /* pequenas animações para interação */
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        /* notificação simples estilo toast (js) */
+        .toast-msg {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.9);
+            background: #1e2a3a;
+            color: white;
+            padding: 0.6rem 1.3rem;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+            z-index: 1000;
+            backdrop-filter: blur(8px);
+            background: rgba(20, 30, 45, 0.92);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+    </style>
 </head>
 <body>
-    <p>testando..</p>
-    
+
+<div class="container">
+    <div class="cabecalho">
+        <h1>✨ Código & Criatividade</h1>
+        <p>Página simples, totalmente responsiva e com personalidade — construída com HTML + CSS interno.</p>
+    </div>
+
+    <div class="conteudo">
+        <!-- Seção de cards informativos -->
+        <div class="grid-cards">
+            <div class="card">
+                <div class="card-icone">🎨</div>
+                <h3>Design leve</h3>
+                <p>Estilos modernos com gradientes suaves, sombras e efeito hover. Tudo pensado para uma experiência agradável.</p>
+                <span class="tag">CSS puro</span>
+            </div>
+            <div class="card">
+                <div class="card-icone">📱</div>
+                <h3>Totalmente responsivo</h3>
+                <p>Adapta-se perfeitamente a celulares, tablets e desktops. Teste redimensionando a janela!</p>
+                <span class="tag">grid flexível</span>
+            </div>
+            <div class="card">
+                <div class="card-icone">⚡</div>
+                <h3>Interatividade sutil</h3>
+                <p>Botão com efeito ao clicar e notificação simples para demonstrar pequena interação JavaScript.</p>
+                <span class="tag">JS básico</span>
+            </div>
+        </div>
+
+        <!-- Área interativa com destaque e botão -->
+        <div class="destaque">
+            <div class="destaque-texto">
+                <h4>💡 Gosta de interação?</h4>
+                <p>Clique no botão ao lado e veja uma mensagem amigável aparecer. Pequenos detalhes fazem a diferença!</p>
+            </div>
+            <button class="btn" id="botaoAcao">✨ Me clique ✨</button>
+        </div>
+
+        <!-- um extra simples: citação com charme minimalista -->
+        <div style="margin-top: 2rem; text-align: center; font-style: italic; color: #3b5a75; padding: 0.5rem;">
+            “Design não é apenas como se parece, mas como funciona.” 
+        </div>
+    </div>
+
+    <div class="rodape">
+        🌿 Página criada com HTML + CSS interno — código limpo, direto e estiloso. <br> 
+        &copy; 2025 • Inspiração simples, sem frameworks.
+    </div>
+</div>
+
+<!-- pequeno container para notificações flutuantes -->
+<div id="toastNotif" class="toast-msg">✨ Olá! Você clicou no botão.</div>
+
+<!-- interação mínima com JS puro (apenas para demonstrar dinamismo) -->
+<script>
+    (function() {
+        const botao = document.getElementById('botaoAcao');
+        const toast = document.getElementById('toastNotif');
+        let timeoutId = null;
+
+        function mostrarMensagem(textoPersonalizado) {
+            if (!toast) return;
+            // cancela qualquer timeout anterior para evitar conflitos
+            if (timeoutId) clearTimeout(timeoutId);
+            
+            // define o texto (custom ou padrão)
+            toast.textContent = textoPersonalizado || '✨ Olá! Você clicou no botão.';
+            toast.classList.add('show');
+            
+            // esconde automaticamente após 2s
+            timeoutId = setTimeout(() => {
+                toast.classList.remove('show');
+                timeoutId = null;
+            }, 2000);
+        }
+
+        if (botao) {
+            botao.addEventListener('click', (event) => {
+                event.preventDefault();
+                // Mensagem alternativa divertida para variar
+                const frases = [
+                    "🚀 Obrigado pela interação!",
+                    "🎉 CSS & HTML no lugar certo!",
+                    "💻 Página simples mas charmosa!",
+                    "✨ Estilos próprios são incríveis.",
+                    "🌟 Você tem bom gosto!"
+                ];
+                const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
+                mostrarMensagem(fraseAleatoria);
+            });
+        }
+
+        // Adiciona também um pequeno efeito nos cards: log no console para quem inspecionar
+        const cards = document.querySelectorAll('.card');
+        cards.forEach((card, index) => {
+            card.addEventListener('click', () => {
+                console.log(`✨ Card "${card.querySelector('h3')?.innerText || index}" foi explorado!`);
+                // Opcional: poderia ser um toast mais técnico, mas mantemos clean
+            });
+        });
+        
+        console.log('✅ Página carregada — estilos integrados com sucesso!');
+    })();
+</script>
 </body>
 </html>

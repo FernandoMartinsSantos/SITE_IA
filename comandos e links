@@ -1,0 +1,56 @@
+
+
+ferna@Fernando_MS MINGW64 /c/wamp64/www/ANGLOSCHOOL 2026 (main)
+$ git branch -M main
+
+ferna@Fernando_MS MINGW64 /c/wamp64/www/ANGLOSCHOOL 2026 (main)
+$ git remote add origin https://github.com/FernandoMartinsSantos/Angloschool_2026.git
+
+ferna@Fernando_MS MINGW64 /c/wamp64/www/ANGLOSCHOOL 2026 (main)
+$ git push -u origin main
+info: please complete authentication in your browser...
+
+
+
+…or create a new repository on the command line
+
+echo "# Angloschool_2026" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/FernandoMartinsSantos/Angloschool_2026.git
+git push -u origin main
+
+git push origin main
+
+
+https://deepseek.com/
+crie uma pagina simples com estilos no proprio html
+
+
+
+file:///C:/wamp64/www/Fe-reposit/SITE_IA/
+
+
+
+crie um logotipo 3d de desenvolvimento de sistema, aplicativos e design gráfico com icone de notebook com cores de guache e fundo colorido
+
+
+
+
+
+…or push an existing repository from the command line
+
+git remote add origin https://github.com/FernandoMartinsSantos/Angloschool_2026.git
+git branch -M main
+git push -u origin main
+
+
+
+IA
+
+
+crie um site java web de web design colorido com 4 paginas responsivas e uma de contato com chat whats app com msasico de fotos eum banner e menu bar drop down com login e senha
+
+

@@ -2,12 +2,9 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>✨ Minha Página Simples | Estilo Próprio</title>
-    
-    <!-- ESTILOS GLOBAIS INCORPORADOS (CSS dentro do HTML) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page | Design Moderno</title>
     <style>
-        /* RESET básico e estilos gerais */
         * {
             margin: 0;
             padding: 0;
@@ -15,317 +12,745 @@
         }
 
         body {
-            font-family: system-ui, 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif;
-            background: linear-gradient(145deg, #f7f9fc 0%, #eef2f5 100%);
-            color: #1e2a3a;
-            line-height: 1.5;
-            min-height: 100vh;
-            padding: 2rem 1.5rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
         }
 
-        /* container principal responsivo */
-        .container {
+        /* Menu Bar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .nav-container {
             max-width: 1200px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(2px);
-            border-radius: 2rem;
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15), 0 1px 3px rgba(0,0,0,0.05);
-            overflow: hidden;
-            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        /* cabeçalho elegante */
-        .cabecalho {
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-            padding: 2.5rem 2rem;
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+
+        /* Dropdown Menu */
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            border-radius: 5px;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu li {
+            list-style: none;
+        }
+
+        .dropdown-menu a {
+            color: #333;
+            padding: 12px 20px;
+            display: block;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-menu a:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding-left: 25px;
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Banner */
+        .banner {
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             text-align: center;
             color: white;
+            margin-top: 0;
         }
 
-        .cabecalho h1 {
-            font-size: 2.4rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 0.5rem;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        .banner::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: moveBackground 20s linear infinite;
         }
 
-        .cabecalho p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
+        @keyframes moveBackground {
+            from {
+                transform: translate(0, 0);
+            }
+            to {
+                transform: translate(50px, 50px);
+            }
         }
 
-        /* conteúdo principal em grid */
-        .conteudo {
-            padding: 2.5rem 2rem;
+        .banner-content {
+            position: relative;
+            z-index: 1;
+            animation: fadeInUp 1s ease;
         }
 
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.8rem;
-            margin-bottom: 2.5rem;
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* cards com efeito sutil */
-        .card {
-            background: white;
-            border-radius: 1.5rem;
-            padding: 1.6rem;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
-            transition: transform 0.25s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(0, 0, 0, 0.03);
+        .banner h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
         }
 
-        .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 30px -12px rgba(0, 0, 0, 0.15);
-            border-color: #cbd5e1;
+        @keyframes pulse {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(255,255,255,0.8);
+            }
         }
 
-        .card-icone {
-            font-size: 2.5rem;
-            margin-bottom: 0.75rem;
-            display: inline-block;
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            color: #0f2b3d;
-        }
-
-        .card p {
-            color: #2c3e4e;
-            margin-bottom: 1.2rem;
-            font-size: 0.95rem;
-        }
-
-        .tag {
-            background: #eef2ff;
-            color: #1e3a8a;
-            padding: 0.25rem 0.8rem;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        /* área de destaque / depoimento */
-        .destaque {
-            background: #eef3fa;
-            border-radius: 1.5rem;
-            padding: 1.8rem;
-            margin-top: 1rem;
-            border-left: 6px solid #2a5298;
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-
-        .destaque-texto {
-            flex: 2;
-        }
-
-        .destaque-texto h4 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: #0a2540;
-        }
-
-        .destaque-texto p {
-            color: #2c3e66;
+        .banner p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
         }
 
         .btn {
-            background: #1e3c72;
-            border: none;
-            color: white;
-            padding: 0.7rem 1.6rem;
-            border-radius: 60px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.2s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            font-family: inherit;
+            display: inline-block;
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin: 0 10px;
         }
 
         .btn:hover {
-            background: #0f2b4f;
-            transform: scale(0.97);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* rodapé charmoso */
-        .rodape {
-            background: #f1f5f9;
-            text-align: center;
-            padding: 1.6rem;
-            border-top: 1px solid #e2e8f0;
-            font-size: 0.85rem;
-            color: #4a5b6e;
-        }
-
-        /* responsividade fina */
-        @media (max-width: 680px) {
-            body {
-                padding: 1rem;
-            }
-            .cabecalho h1 {
-                font-size: 1.8rem;
-            }
-            .conteudo {
-                padding: 1.5rem;
-            }
-            .grid-cards {
-                gap: 1.2rem;
-            }
-        }
-
-        /* pequenas animações para interação */
-        .btn:active {
-            transform: scale(0.96);
-        }
-
-        /* notificação simples estilo toast (js) */
-        .toast-msg {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) scale(0.9);
-            background: #1e2a3a;
+        .btn-outline {
+            background: transparent;
             color: white;
-            padding: 0.6rem 1.3rem;
-            border-radius: 40px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.2s, transform 0.2s;
-            pointer-events: none;
-            z-index: 1000;
-            backdrop-filter: blur(8px);
-            background: rgba(20, 30, 45, 0.92);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border: 2px solid white;
         }
-        .toast-msg.show {
-            opacity: 1;
-            transform: translateX(-50%) scale(1);
+
+        /* Mosaico de Fotos com Slides */
+        .gallery-section {
+            padding: 80px 20px;
+            background: #f8f9fa;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .mosaic-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 60px;
+        }
+
+        .mosaic-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mosaic-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .mosaic-item img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            transition: all 0.5s ease;
+        }
+
+        .mosaic-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .mosaic-overlay {
+            position: absolute;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 20px;
+            transition: bottom 0.3s ease;
+        }
+
+        .mosaic-item:hover .mosaic-overlay {
+            bottom: 0;
+        }
+
+        /* Slideshow */
+        .slideshow-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .slide {
+            display: none;
+            animation: fade 0.5s ease;
+        }
+
+        @keyframes fade {
+            from {opacity: 0.4}
+            to {opacity: 1}
+        }
+
+        .slide img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+        }
+
+        .slide-caption {
+            position: absolute;
+            bottom: 50px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            background: rgba(0,0,0,0.7);
+            padding: 20px;
+            font-size: 1.2rem;
+        }
+
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            padding: 16px;
+            margin-top: -22px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.3s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+
+        .prev:hover, .next:hover {
+            background: rgba(0,0,0,0.8);
+        }
+
+        .dots {
+            text-align: center;
+            padding: 20px;
+            background: #f1f1f1;
+        }
+
+        .dot {
+            cursor: pointer;
+            height: 15px;
+            width: 15px;
+            margin: 0 2px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .dot.active, .dot:hover {
+            background-color: #667eea;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hamburger {
+                display: block;
+            }
+
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0,0,0,0.05);
+                padding: 20px 0;
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .dropdown-menu {
+                position: static;
+                background: rgba(255,255,255,0.1);
+                margin-top: 10px;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                display: none;
+            }
+
+            .dropdown.active .dropdown-menu {
+                display: block;
+            }
+
+            .dropdown-menu a {
+                color: white;
+            }
+
+            .banner h1 {
+                font-size: 2rem;
+            }
+
+            .mosaic-container {
+                grid-template-columns: 1fr;
+                padding: 0 20px;
+            }
+
+            .slide img {
+                height: 300px;
+            }
+
+            .btn {
+                display: block;
+                margin: 10px 20px;
+            }
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <div class="cabecalho">
-        <h1>✨ Código & Criatividade</h1>
-        <p>Página simples, totalmente responsiva e com personalidade — construída com HTML + CSS interno.</p>
-    </div>
-
-    <div class="conteudo">
-        <!-- Seção de cards informativos -->
-        <div class="grid-cards">
-            <div class="card">
-                <div class="card-icone">🎨</div>
-                <h3>Design leve</h3>
-                <p>Estilos modernos com gradientes suaves, sombras e efeito hover. Tudo pensado para uma experiência agradável.</p>
-                <span class="tag">CSS puro</span>
+    <!-- Menu Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span>✨</span> LandPage
+            </a>
+            <div class="hamburger">
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
-            <div class="card">
-                <div class="card-icone">📱</div>
-                <h3>Totalmente responsivo</h3>
-                <p>Adapta-se perfeitamente a celulares, tablets e desktops. Teste redimensionando a janela!</p>
-                <span class="tag">grid flexível</span>
-            </div>
-            <div class="card">
-                <div class="card-icone">⚡</div>
-                <h3>Interatividade sutil</h3>
-                <p>Botão com efeito ao clicar e notificação simples para demonstrar pequena interação JavaScript.</p>
-                <span class="tag">JS básico</span>
-            </div>
+            <ul class="nav-menu">
+                <li class="nav-item"><a href="#home" class="nav-link">Início</a></li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Serviços ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Web Design</a></li>
+                        <li><a href="#">Desenvolvimento</a></li>
+                        <li><a href="#">Marketing Digital</a></li>
+                        <li><a href="#">SEO</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link">Portfólio ▼</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">Websites</a></li>
+                        <li><a href="#">Apps</a></li>
+                        <li><a href="#">Branding</a></li>
+                        <li><a href="#">Design Gráfico</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="#gallery" class="nav-link">Galeria</a></li>
+                <li class="nav-item"><a href="#slideshow" class="nav-link">Slideshow</a></li>
+                <li class="nav-item"><a href="#contact" class="nav-link">Contato</a></li>
+            </ul>
         </div>
+    </nav>
 
-        <!-- Área interativa com destaque e botão -->
-        <div class="destaque">
-            <div class="destaque-texto">
-                <h4>💡 Gosta de interação?</h4>
-                <p>Clique no botão ao lado e veja uma mensagem amigável aparecer. Pequenos detalhes fazem a diferença!</p>
+    <!-- Banner -->
+    <section id="home" class="banner">
+        <div class="banner-content">
+            <h1>Bem-vindo ao Futuro</h1>
+            <p>Criamos experiências digitais incríveis que transformam ideias em realidade</p>
+            <a href="#" class="btn">Começar Agora</a>
+            <a href="#" class="btn btn-outline">Saiba Mais</a>
+        </div>
+    </section>
+
+    <!-- Mosaico de Fotos -->
+    <section id="gallery" class="gallery-section">
+        <h2 class="section-title">🎨 Galeria de Inspiração</h2>
+        <div class="mosaic-container" id="mosaic">
+            <!-- As imagens serão inseridas via JavaScript -->
+        </div>
+    </section>
+
+    <!-- Slideshow -->
+    <section id="slideshow" class="gallery-section" style="padding-top: 0;">
+        <h2 class="section-title">📸 Destaques</h2>
+        <div class="slideshow-container">
+            <div class="slide fade">
+                <img src="https://picsum.photos/id/1015/1200/500" alt="Paisagem">
+                <div class="slide-caption">Natureza Inspiradora</div>
             </div>
-            <button class="btn" id="botaoAcao">✨ Me clique ✨</button>
+            <div class="slide fade">
+                <img src="https://picsum.photos/id/104/1200/500" alt="Tecnologia">
+                <div class="slide-caption">Tecnologia de Ponta</div>
+            </div>
+            <div class="slide fade">
+                <img src="https://picsum.photos/id/106/1200/500" alt="Criatividade">
+                <div class="slide-caption">Criatividade sem Limites</div>
+            </div>
+            <div class="slide fade">
+                <img src="https://picsum.photos/id/107/1200/500" alt="Inovação">
+                <div class="slide-caption">Inovação Constante</div>
+            </div>
+            <div class="slide fade">
+                <img src="https://picsum.photos/id/116/1200/500" alt="Arquitetura">
+                <div class="slide-caption">Arquitetura Moderna</div>
+            </div>
+            <a class="prev" onclick="changeSlide(-1)">❮</a>
+            <a class="next" onclick="changeSlide(1)">❯</a>
         </div>
+        <div class="dots" id="dots"></div>
+    </section>
 
-        <!-- um extra simples: citação com charme minimalista -->
-        <div style="margin-top: 2rem; text-align: center; font-style: italic; color: #3b5a75; padding: 0.5rem;">
-            “Design não é apenas como se parece, mas como funciona.” 
-        </div>
-    </div>
+    <!-- Footer -->
+    <footer class="footer" id="contact">
+        <p>&copy; 2024 LandPage - Todos os direitos reservados</p>
+        <p style="margin-top: 10px;">📧 contato@landpage.com | 📱 (11) 99999-9999</p>
+    </footer>
 
-    <div class="rodape">
-        🌿 Página criada com HTML + CSS interno — código limpo, direto e estiloso. <br> 
-        &copy; 2025 • Inspiração simples, sem frameworks.
-    </div>
-</div>
+    <script>
+        // Dados do mosaico
+        const mosaicImages = [
+            { src: "https://picsum.photos/id/20/400/300", title: "Trabalho em Equipe", desc: "Colaboração que gera resultados" },
+            { src: "https://picsum.photos/id/26/400/300", title: "Arquitetura Moderna", desc: "Design inovador" },
+            { src: "https://picsum.photos/id/29/400/300", title: "Tecnologia", desc: "Soluções inteligentes" },
+            { src: "https://picsum.photos/id/38/400/300", title: "Criatividade", desc: "Ideias que inspiram" },
+            { src: "https://picsum.photos/id/42/400/300", title: "Música", desc: "Harmonia perfeita" },
+            { src: "https://picsum.photos/id/55/400/300", title: "Arte", desc: "Expressão única" }
+        ];
 
-<!-- pequeno container para notificações flutuantes -->
-<div id="toastNotif" class="toast-msg">✨ Olá! Você clicou no botão.</div>
-
-<!-- interação mínima com JS puro (apenas para demonstrar dinamismo) -->
-<script>
-    (function() {
-        const botao = document.getElementById('botaoAcao');
-        const toast = document.getElementById('toastNotif');
-        let timeoutId = null;
-
-        function mostrarMensagem(textoPersonalizado) {
-            if (!toast) return;
-            // cancela qualquer timeout anterior para evitar conflitos
-            if (timeoutId) clearTimeout(timeoutId);
+        // Gerar mosaico
+        function generateMosaic() {
+            const mosaicContainer = document.getElementById('mosaic');
+            mosaicContainer.innerHTML = '';
             
-            // define o texto (custom ou padrão)
-            toast.textContent = textoPersonalizado || '✨ Olá! Você clicou no botão.';
-            toast.classList.add('show');
-            
-            // esconde automaticamente após 2s
-            timeoutId = setTimeout(() => {
-                toast.classList.remove('show');
-                timeoutId = null;
-            }, 2000);
-        }
-
-        if (botao) {
-            botao.addEventListener('click', (event) => {
-                event.preventDefault();
-                // Mensagem alternativa divertida para variar
-                const frases = [
-                    "🚀 Obrigado pela interação!",
-                    "🎉 CSS & HTML no lugar certo!",
-                    "💻 Página simples mas charmosa!",
-                    "✨ Estilos próprios são incríveis.",
-                    "🌟 Você tem bom gosto!"
-                ];
-                const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
-                mostrarMensagem(fraseAleatoria);
+            mosaicImages.forEach(image => {
+                const mosaicItem = document.createElement('div');
+                mosaicItem.className = 'mosaic-item';
+                mosaicItem.innerHTML = `
+                    <img src="${image.src}" alt="${image.title}">
+                    <div class="mosaic-overlay">
+                        <h3>${image.title}</h3>
+                        <p>${image.desc}</p>
+                    </div>
+                `;
+                mosaicContainer.appendChild(mosaicItem);
             });
         }
 
-        // Adiciona também um pequeno efeito nos cards: log no console para quem inspecionar
-        const cards = document.querySelectorAll('.card');
-        cards.forEach((card, index) => {
-            card.addEventListener('click', () => {
-                console.log(`✨ Card "${card.querySelector('h3')?.innerText || index}" foi explorado!`);
-                // Opcional: poderia ser um toast mais técnico, mas mantemos clean
+        // Slideshow functionality
+        let slideIndex = 1;
+        let slideInterval;
+
+        function showSlides(n) {
+            let i;
+            let slides = document.getElementsByClassName("slide");
+            let dots = document.getElementsByClassName("dot");
+            
+            if (n > slides.length) {slideIndex = 1}
+            if (n < 1) {slideIndex = slides.length}
+            
+            for (i = 0; i < slides.length; i++) {
+                slides[i].style.display = "none";
+            }
+            
+            for (i = 0; i < dots.length; i++) {
+                dots[i].className = dots[i].className.replace(" active", "");
+            }
+            
+            if (slides[slideIndex-1]) {
+                slides[slideIndex-1].style.display = "block";
+                if (dots[slideIndex-1]) {
+                    dots[slideIndex-1].className += " active";
+                }
+            }
+        }
+
+        function changeSlide(n) {
+            clearInterval(slideInterval);
+            showSlides(slideIndex += n);
+            startAutoSlide();
+        }
+
+        function currentSlide(n) {
+            clearInterval(slideInterval);
+            showSlides(slideIndex = n);
+            startAutoSlide();
+        }
+
+        function startAutoSlide() {
+            slideInterval = setInterval(() => {
+                showSlides(slideIndex += 1);
+            }, 4000);
+        }
+
+        // Gerar dots
+        function generateDots() {
+            const slides = document.getElementsByClassName("slide");
+            const dotsContainer = document.getElementById('dots');
+            dotsContainer.innerHTML = '';
+            
+            for (let i = 0; i < slides.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                dot.onclick = (function(index) {
+                    return function() { currentSlide(index + 1); };
+                })(i);
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        // Menu responsivo
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+        
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+        
+        // Dropdown responsivo
+        const dropdowns = document.querySelectorAll('.dropdown');
+        
+        if (window.innerWidth <= 768) {
+            dropdowns.forEach(dropdown => {
+                const link = dropdown.querySelector('.nav-link');
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                });
+            });
+        }
+        
+        // Smooth scroll para links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    // Fechar menu mobile se estiver aberto
+                    if (navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                    }
+                }
             });
         });
         
-        console.log('✅ Página carregada — estilos integrados com sucesso!');
-    })();
-</script>
+        // Scroll spy - mudar estilo do menu ao rolar
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // Adicionar efeito parallax no banner
+        window.addEventListener('scroll', () => {
+            const banner = document.querySelector('.banner');
+            const scrolled = window.pageYOffset;
+            banner.style.transform = `translateY(${scrolled * 0.5}px)`;
+        });
+        
+        // Inicializar
+        generateMosaic();
+        generateDots();
+        showSlides(slideIndex);
+        startAutoSlide();
+        
+        // Redimensionar janela - ajustar dropdowns
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('active');
+                });
+                if (navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                }
+            }
+        });
+        
+        // Adicionar animação de scroll reveal
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.mosaic-item, .slideshow-container').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+        
+        // Animação do banner ao carregar
+        window.addEventListener('load', () => {
+            document.querySelector('.banner-content').style.animation = 'fadeInUp 1s ease';
+        });
+    </script>
 </body>
 </html>

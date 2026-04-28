@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Logotipo 3D - DevSystem, Apps & Design Gráfico | Estilo Guache Claro</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', 'Arial', sans-serif;
+            background-color: #ffffff;
+        }
+
+        /* Interface de controle minimalista */
+        .controls-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 18px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            z-index: 100;
+            text-align: center;
+            font-size: 12px;
+            pointer-events: auto;
+            border: 1px solid rgba(200,200,200,0.3);
+        }
+
+        .controls-panel h3 {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .color-schemes {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        .color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .info-text {
+            font-size: 10px;
+            color: #999;
+            margin-top: 6px;
+        }
+
+        .instruction {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            z-index: 100;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            font-weight: 400;
+        }
+
+        /* Loader inicial */
+        .loader {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px 30px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: 1000;
+            text-align: center;
+            font-family: monospace;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            .controls-panel { padding: 8px 12px; }
+            .color-btn { width: 28px; height: 28px; }
+            .instruction { font-size: 9px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls-panel">
+        <h3>🎨 Paletas Guache Claro</h3>
+        <div class="color-schemes">
+            <div class="color-btn" style="background: linear-gradient(135deg, #FFB7B2, #B5EAD7, #C7CEEA);" onclick="changeColorScheme('pastel')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #FFD6A5, #FDFFB6, #CAFFBF);" onclick="changeColorScheme('soft')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #E8D1FF, #B8F2E6, #FFC8DD);" onclick="changeColorScheme('lavender')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #A0C4FF, #FDCA40, #F79824);" onclick="changeColorScheme('sunny')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #CDEAC0, #F9B5AC, #FFD166);" onclick="changeColorScheme('natural')"></div>
+        </div>
+        <div class="info-text">🖱️ Arraste para girar | Scroll para zoom</div>
+    </div>
+    <div class="instruction">
+        ✨ Logotipo 3D | DevSystem + Apps + Design Gráfico
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+        // Configuração da cena - Fundo branco suave
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0xfefefe);
+        scene.backgroundIntensity = 1;
+
+        // Câmera
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(4.5, 3.2, 6.8);
+        camera.lookAt(0, 0.2, 0);
+
+        // Renderers
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+
+        // Controles com auto-rotação suave
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.2;
+        controls.enableZoom = true;
+        controls.enablePan = true;
+        controls.zoomSpeed = 1.0;
+        controls.target.set(0, 0.3, 0);
+
+        // ========== ILUMINAÇÃO SUAVE ==========
+        // Luz ambiente clara
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+        
+        // Luz principal direcional suave
+        const mainLight = new THREE.DirectionalLight(0xfff5e6, 0.9);
+        mainLight.position.set(4, 6, 3);
+        mainLight.castShadow = true;
+        mainLight.receiveShadow = true;
+        mainLight.shadow.mapSize.width = 1024;
+        mainLight.shadow.mapSize.height = 1024;
+        scene.add(mainLight);
+        
+        // Luz de preenchimento frontal
+        const fillLight = new THREE.PointLight(0xcceeff, 0.5);
+        fillLight.position.set(1, 2, 3);
+        scene.add(fillLight);
+        
+        // Luz traseira suave
+        const backLight = new THREE.PointLight(0xffddbb, 0.4);
+        backLight.position.set(-1, 1.5, -4);
+        scene.add(backLight);
+        
+        // Luz lateral colorida suave (efeito guache)
+        const colorLight = new THREE.PointLight(0xffaacc, 0.35);
+        colorLight.position.set(2.5, 1.8, 1.5);
+        scene.add(colorLight);
+        
+        // Luz de rim (contorno)
+        const rimLight = new THREE.PointLight(0xffccaa, 0.4);
+        rimLight.position.set(-2, 2.5, 2);
+        scene.add(rimLight);
+        
+        // Luz inferior suave
+        const bottomLight = new THREE.PointLight(0xaaddff, 0.3);
+        bottomLight.position.set(0, -1.5, 0);
+        scene.add(bottomLight);
+
+        // ========== ELEMENTOS DECORATIVOS ==========
+        // Partículas suaves de fundo (efeito aquarela)
+        const particleCount = 600;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        const particleColors = new Float32Array(particleCount * 3);
+        
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 24;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 12;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 18 - 5;
+            
+            // Cores pastel claras
+            const colors = [[0xFFB7B2, 0.8], [0xB5EAD7, 0.7], [0xC7CEEA, 0.6], [0xFFD6A5, 0.8], [0xFDFFB6, 0.7]];
+            const col = colors[Math.floor(Math.random() * colors.length)];
+            const r = ((col[0] >> 16) & 255) / 255;
+            const g = ((col[0] >> 8) & 255) / 255;
+            const b = (col[0] & 255) / 255;
+            particleColors[i*3] = r;
+            particleColors[i*3+1] = g;
+            particleColors[i*3+2] = b;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.04,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.4,
+            blending: THREE.AdditiveBlending
+        });
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+
+        // ========== GRUPO PRINCIPAL DO LOGOTIPO ==========
+        const logoGroup = new THREE.Group();
+
+        // ===== 1. NUVEM ESTILO GUACHE (cores claras) =====
+        const cloudGroup = new THREE.Group();
+        
+        const cloudSpheres = [
+            { pos: [0, 0.55, 0], scale: 0.85, color: '#FFB7B2', opacity: 0.92 },
+            { pos: [0.75, 0.28, 0.15], scale: 0.68, color: '#B5EAD7', opacity: 0.9 },
+            { pos: [-0.75, 0.28, 0.15], scale: 0.68, color: '#C7CEEA', opacity: 0.9 },
+            { pos: [0.38, -0.05, 0.35], scale: 0.58, color: '#FFD6A5', opacity: 0.88 },
+            { pos: [-0.38, -0.05, 0.35], scale: 0.58, color: '#FDFFB6', opacity: 0.88 },
+            { pos: [0, -0.25, 0.45], scale: 0.52, color: '#CAFFBF', opacity: 0.85 },
+            { pos: [0.95, 0.45, -0.1], scale: 0.48, color: '#E8D1FF', opacity: 0.87 },
+            { pos: [-0.95, 0.45, -0.1], scale: 0.48, color: '#B8F2E6', opacity: 0.87 },
+            { pos: [0.55, -0.35, -0.2], scale: 0.48, color: '#FFC8DD', opacity: 0.85 },
+            { pos: [-0.55, -0.35, -0.2], scale: 0.48, color: '#A0C4FF', opacity: 0.85 },
+            { pos: [1.15, 0.15, -0.25], scale: 0.42, color: '#FDCA40', opacity: 0.82 },
+            { pos: [-1.15, 0.15, -0.25], scale: 0.42, color: '#F79824', opacity: 0.82 }
+        ];
+        
+        cloudSpheres.forEach(sphere => {
+            const geometry = new THREE.SphereGeometry(0.42, 48, 48);
+            const material = new THREE.MeshStandardMaterial({
+                color: sphere.color,
+                roughness: 0.28,
+                metalness: 0.05,
+                emissive: sphere.color,
+                emissiveIntensity: 0.08,
+                flatShading: false,
+                transparent: true,
+                opacity: sphere.opacity
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(sphere.pos[0], sphere.pos[1], sphere.pos[2]);
+            mesh.scale.set(sphere.scale, sphere.scale, sphere.scale);
+            mesh.castShadow = true;
+            mesh.receiveShadow = false;
+            cloudGroup.add(mesh);
+        });
+        
+        // Pequenas gotículas de tinta guache (esferas coloridas)
+        const dropletColors = ['#FFB7B2', '#B5EAD7', '#C7CEEA', '#FFD6A5', '#FDFFB6', '#E8D1FF', '#FFC8DD'];
+        for (let i = 0; i < 80; i++) {
+            const droplet = new THREE.Mesh(
+                new THREE.SphereGeometry(0.045, 16, 16),
+                new THREE.MeshStandardMaterial({
+                    color: dropletColors[Math.floor(Math.random() * dropletColors.length)],
+                    roughness: 0.3,
+                    emissiveIntensity: 0.05,
+                    transparent: true,
+                    opacity: 0.7
+                })
+            );
+            droplet.position.set(
+                (Math.random() - 0.5) * 1.6,
+                (Math.random() - 0.5) * 1.1 + 0.2,
+                (Math.random() - 0.5) * 1.1 + 0.2
+            );
+            droplet.castShadow = true;
+            cloudGroup.add(droplet);
+        }
+        
+        cloudGroup.position.y = 1.15;
+        cloudGroup.position.x = 0;
+        logoGroup.add(cloudGroup);
+
+        // ===== 2. NOTEBOOK 3D DETALHADO =====
+        const laptopGroup = new THREE.Group();
+        
+        // Base do notebook (parte inferior) - cor clara madeira/creme
+        const baseGeometry = new THREE.BoxGeometry(1.55, 0.07, 1.18);
+        const baseMaterial = new THREE.MeshStandardMaterial({
+            color: '#E8D5B7',
+            roughness: 0.45,
+            metalness: 0.08,
+            emissive: '#D4C4A8',
+            emissiveIntensity: 0.03
+        });
+        const laptopBase = new THREE.Mesh(baseGeometry, baseMaterial);
+        laptopBase.position.y = -0.19;
+        laptopBase.castShadow = true;
+        laptopBase.receiveShadow = true;
+        laptopGroup.add(laptopBase);
+        
+        // Superfície do teclado
+        const keyboardBaseGeometry = new THREE.BoxGeometry(1.38, 0.02, 0.98);
+        const keyboardBaseMat = new THREE.MeshStandardMaterial({
+            color: '#F5EDE0',
+            roughness: 0.5,
+            metalness: 0.05
+        });
+        const keyboardBaseMesh = new THREE.Mesh(keyboardBaseGeometry, keyboardBaseMat);
+        keyboardBaseMesh.position.y = -0.14;
+        keyboardBaseMesh.castShadow = true;
+        laptopGroup.add(keyboardBaseMesh);
+        
+        // Teclas (grid de teclas claras)
+        const keyColors = ['#FFFFFF', '#F8F3E6', '#FFF8F0'];
+        for (let i = -0.55; i <= 0.58; i += 0.085) {
+            for (let j = -0.42; j <= 0.44; j += 0.085) {
+                if (Math.abs(i) < 0.15 && Math.abs(j) < 0.15) continue;
+                if (Math.random() > 0.75) continue;
+                const keyGeo = new THREE.BoxGeometry(0.068, 0.018, 0.068);
+                const keyMat = new THREE.MeshStandardMaterial({ 
+                    color: keyColors[Math.floor(Math.random() * keyColors.length)],
+                    roughness: 0.35,
+                    emissive: '#FFF',
+                    emissiveIntensity: 0.02
+                });
+                const key = new THREE.Mesh(keyGeo, keyMat);
+                key.position.set(i, -0.12, j);
+                key.castShadow = true;
+                laptopGroup.add(key);
+            }
+        }
+        
+        // Touchpad
+        const touchpadGeo = new THREE.BoxGeometry(0.45, 0.015, 0.65);
+        const touchpadMat = new THREE.MeshStandardMaterial({ color: '#E8DDD0', roughness: 0.4, metalness: 0.1 });
+        const touchpad = new THREE.Mesh(touchpadGeo, touchpadMat);
+        touchpad.position.set(0.48, -0.12, 0.05);
+        laptopGroup.add(touchpad);
+        
+        // Tela do notebook
+        const screenGroup = new THREE.Group();
+        
+        // Moldura da tela (creme)
+        const bezelGeometry = new THREE.BoxGeometry(1.42, 1.02, 0.045);
+        const bezelMaterial = new THREE.MeshStandardMaterial({
+            color: '#F0E6D2',
+            roughness: 0.35,
+            metalness: 0.1
+        });
+        const bezel = new THREE.Mesh(bezelGeometry, bezelMaterial);
+        bezel.position.set(0, 0.44, -0.028);
+        bezel.castShadow = true;
+        screenGroup.add(bezel);
+        
+        // Tela (display) - gradiente claro
+        const screenGeometry = new THREE.BoxGeometry(1.32, 0.92, 0.025);
+        const screenMaterial = new THREE.MeshStandardMaterial({
+            color: '#D6EAF8',
+            roughness: 0.2,
+            metalness: 0.15,
+            emissive: '#AED6F1',
+            emissiveIntensity: 0.25,
+            transparent: true,
+            opacity: 0.95
+        });
+        const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+        screen.position.set(0, 0.44, -0.008);
+        screen.castShadow = true;
+        screenGroup.add(screen);
+        
+        // Conteúdo da tela - linhas de código coloridas
+        const codeLineColors = ['#6C5CE7', '#00B894', '#E17055', '#0984E3', '#FDCB6E'];
+        const codeLines = [
+            { pos: [-0.52, 0.54, 0.012], width: 0.42, color: '#6C5CE7' },
+            { pos: [-0.52, 0.48, 0.012], width: 0.35, color: '#00B894' },
+            { pos: [-0.52, 0.42, 0.012], width: 0.48, color: '#E17055' },
+            { pos: [-0.52, 0.36, 0.012], width: 0.3, color: '#0984E3' },
+            { pos: [-0.52, 0.30, 0.012], width: 0.44, color: '#FDCB6E' },
+            { pos: [-0.52, 0.24, 0.012], width: 0.38, color: '#A29BFE' },
+            { pos: [-0.52, 0.18, 0.012], width: 0.32, color: '#55E6C1' }
+        ];
+        
+        codeLines.forEach(line => {
+            const lineGeo = new THREE.BoxGeometry(line.width, 0.022, 0.008);
+            const lineMat = new THREE.MeshStandardMaterial({
+                color: line.color,
+                emissive: line.color,
+                emissiveIntensity: 0.35,
+                roughness: 0.2
+            });
+            const lineMesh = new THREE.Mesh(lineGeo, lineMat);
+            lineMesh.position.set(line.pos[0] + line.width/2, line.pos[1], line.pos[2]);
+            screenGroup.add(lineMesh);
+        });
+        
+        // Ícone de código </> na tela
+        const codeIconGroup = new THREE.Group();
+        const codeIconMat = new THREE.MeshStandardMaterial({ color: '#FF9F43', emissive: '#FF9F43', emissiveIntensity: 0.3 });
+        const slash1 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 0.008), codeIconMat);
+        slash1.position.set(0.48, 0.78, 0.012);
+        const slash2 = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.06, 0.008), codeIconMat);
+        slash2.position.set(0.56, 0.78, 0.012);
+        screenGroup.add(slash1);
+        screenGroup.add(slash2);
+        
+        // Ícone de pincel (Design Gráfico)
+        const brushIconGeo = new THREE.BoxGeometry(0.12, 0.12, 0.008);
+        const brushMat = new THREE.MeshStandardMaterial({ color: '#FF8A65', emissive: '#FF8A65', emissiveIntensity: 0.25 });
+        const brushIcon = new THREE.Mesh(brushIconGeo, brushMat);
+        brushIcon.position.set(-0.55, 0.78, 0.012);
+        screenGroup.add(brushIcon);
+        
+        screenGroup.position.y = 0.22;
+        screenGroup.rotation.x = -0.75;
+        screenGroup.position.z = -0.42;
+        laptopGroup.add(screenGroup);
+        
+        laptopGroup.position.y = -0.25;
+        laptopGroup.position.x = 0;
+        laptopGroup.position.z = 0.35;
+        logoGroup.add(laptopGroup);
+
+        // ===== 3. ELEMENTOS FLUTUANTES (Dev, Apps, Design) =====
+        const floatingLabels = [
+            { text: '🚀 DEV', color: '#6C5CE7', pos: [-1.2, 0.9, 0.8], size: '16px' },
+            { text: '📱 APPS', color: '#00B894', pos: [1.3, 0.7, 0.7], size: '14px' },
+            { text: '🎨 DESIGN', color: '#E17055', pos: [0, 1.3, -0.9], size: '14px' },
+            { text: '⚡ UI/UX', color: '#0984E3', pos: [-1.0, -0.2, 1.0], size: '12px' },
+            { text: '💻 CODE', color: '#FDCB6E', pos: [1.1, -0.1, 0.9], size: '12px' }
+        ];
+        
+        const floatingElements = [];
+        
+        floatingLabels.forEach(labelData => {
+            const div = document.createElement('div');
+            div.textContent = labelData.text;
+            div.style.color = labelData.color;
+            div.style.fontSize = labelData.size;
+            div.style.fontWeight = '600';
+            div.style.fontFamily = "'Poppins', 'Segoe UI', Arial";
+            div.style.background = 'rgba(255,255,255,0.85)';
+            div.style.padding = '4px 12px';
+            div.style.borderRadius = '30px';
+            div.style.backdropFilter = 'blur(8px)';
+            div.style.border = '1px solid rgba(200,200,200,0.3)';
+            div.style.boxShadow = '0 2px 10px rgba(0,0,0,0.05)';
+            div.style.letterSpacing = '0.5px';
+            
+            const label = new CSS2DObject(div);
+            label.position.set(labelData.pos[0], labelData.pos[1], labelData.pos[2]);
+            logoGroup.add(label);
+            floatingElements.push({ obj: label, speed: 0.008, range: 0.08, startY: labelData.pos[1], startX: labelData.pos[0], startZ: labelData.pos[2] });
+        });
+        
+        // ===== 4. ANÉIS ORBITAIS SUAVES =====
+        const ringGeometry1 = new THREE.TorusGeometry(1.35, 0.025, 96, 200);
+        const ringMaterial1 = new THREE.MeshStandardMaterial({
+            color: '#FFB7B2',
+            roughness: 0.3,
+            metalness: 0.4,
+            emissive: '#FFB7B2',
+            emissiveIntensity: 0.15,
+            transparent: true,
+            opacity: 0.7
+        });
+        const ring1 = new THREE.Mesh(ringGeometry1, ringMaterial1);
+        ring1.rotation.x = Math.PI / 2 + 0.2;
+        ring1.rotation.z = Date.now() * 0.0008;
+        ring1.position.y = 0.15;
+        logoGroup.add(ring1);
+        
+        const ringGeometry2 = new THREE.TorusGeometry(1.65, 0.02, 96, 200);
+        const ringMaterial2 = new THREE.MeshStandardMaterial({
+            color: '#B5EAD7',
+            roughness: 0.3,
+            metalness: 0.4,
+            emissive: '#B5EAD7',
+            emissiveIntensity: 0.12,
+            transparent: true,
+            opacity: 0.6
+        });
+        const ring2 = new THREE.Mesh(ringGeometry2, ringMaterial2);
+        ring2.rotation.x = Math.PI / 2 + 0.35;
+        ring2.rotation.z = -Date.now() * 0.0006;
+        ring2.position.y = 0.15;
+        logoGroup.add(ring2);
+        
+        const ringGeometry3 = new THREE.TorusGeometry(1.0, 0.018, 96, 200);
+        const ringMaterial3 = new THREE.MeshStandardMaterial({
+            color: '#C7CEEA',
+            roughness: 0.3,
+            metalness: 0.4,
+            emissive: '#C7CEEA',
+            emissiveIntensity: 0.1,
+            transparent: true,
+            opacity: 0.65
+        });
+        const ring3 = new THREE.Mesh(ringGeometry3, ringMaterial3);
+        ring3.rotation.x = Math.PI / 2 + 0.1;
+        ring3.rotation.z = Date.now() * 0.001;
+        ring3.position.y = 0.15;
+        logoGroup.add(ring3);
+        
+        // ===== 5. PARTÍCULAS DE TINTA GUACHE (orbitando) =====
+        const paintSpecks = [];
+        const speckColorsLight = ['#FFB7B2', '#B5EAD7', '#C7CEEA', '#FFD6A5', '#FDFFB6', '#E8D1FF', '#FFC8DD', '#A0C4FF'];
+        
+        for (let i = 0; i < 70; i++) {
+            const speck = new THREE.Mesh(
+                new THREE.SphereGeometry(0.035, 12, 12),
+                new THREE.MeshStandardMaterial({
+                    color: speckColorsLight[Math.floor(Math.random() * speckColorsLight.length)],
+                    emissiveIntensity: 0.08,
+                    roughness: 0.4,
+                    transparent: true,
+                    opacity: 0.75
+                })
+            );
+            const angle = (i / 70) * Math.PI * 2;
+            const radius = 1.9;
+            speck.position.set(Math.cos(angle) * radius, Math.sin(angle * 1.8) * 0.7 + 0.2, Math.sin(angle) * radius);
+            logoGroup.add(speck);
+            paintSpecks.push({ obj: speck, angle: angle, radius: radius, speed: 0.008, yOffset: 0 });
+        }
+        
+        // ===== 6. TEXTO PRINCIPAL (CSS2D) =====
+        const mainTitleDiv = document.createElement('div');
+        mainTitleDiv.innerHTML = `
+            <div style="text-align: center; font-family: 'Poppins', 'Segoe UI', Arial;">
+                <span style="font-size: 28px; font-weight: 800; background: linear-gradient(135deg, #6C5CE7, #00B894, #E17055); -webkit-background-clip: text; background-clip: text; color: transparent;">DEV</span>
+                <span style="font-size: 24px; font-weight: 600; color: #555;">SYSTEM</span>
+                <span style="font-size: 20px; font-weight: 500; color: #888; margin: 0 4px;">+</span>
+                <span style="font-size: 24px; font-weight: 600; background: linear-gradient(135deg, #0984E3, #FDCB6E); -webkit-background-clip: text; background-clip: text; color: transparent;">APPS</span>
+                <span style="font-size: 20px; font-weight: 500; color: #888; margin: 0 4px;">&</span>
+                <span style="font-size: 24px; font-weight: 600; background: linear-gradient(135deg, #FF8A65, #A29BFE); -webkit-background-clip: text; background-clip: text; color: transparent;">DESIGN</span>
+                <br>
+                <span style="font-size: 13px; letter-spacing: 3px; color: #aaa; font-weight: 300;">CREATIVE SOLUTIONS</span>
+            </div>
+        `;
+        mainTitleDiv.style.textShadow = '0 1px 2px rgba(0,0,0,0.05)';
+        const mainTitle = new CSS2DObject(mainTitleDiv);
+        mainTitle.position.set(0, -0.95, 0);
+        logoGroup.add(mainTitle);
+        
+        scene.add(logoGroup);
+        
+        // Sombra suave no chão (plano invisível para reflexão)
+        const shadowPlane = new THREE.Mesh(
+            new THREE.PlaneGeometry(5, 5),
+            new THREE.MeshStandardMaterial({
+                color: 0xf0f0f0,
+                roughness: 0.5,
+                metalness: 0.05,
+                transparent: true,
+                opacity: 0.3
+            })
+        );
+        shadowPlane.rotation.x = -Math.PI / 2;
+        shadowPlane.position.y = -0.85;
+        shadowPlane.receiveShadow = true;
+        scene.add(shadowPlane);
+        
+        // ========== ANIMAÇÕES ==========
+        let time = 0;
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.016;
+            
+            if (controls.autoRotate) {
+                controls.update();
+            }
+            
+            // Animações dos anéis
+            ring1.rotation.z += 0.008;
+            ring2.rotation.z -= 0.006;
+            ring3.rotation.z += 0.005;
+            
+            // Animações das partículas de tinta
+            paintSpecks.forEach((speck, idx) => {
+                speck.angle += speck.speed;
+                speck.obj.position.x = Math.cos(speck.angle) * speck.radius;
+                speck.obj.position.z = Math.sin(speck.angle) * speck.radius;
+                speck.obj.position.y = Math.sin(speck.angle * 1.5) * 0.5 + 0.2;
+            });
+            
+            // Animações dos elementos flutuantes
+            floatingElements.forEach((el, idx) => {
+                el.obj.position.y = el.startY + Math.sin(time * 1.5 + idx) * 0.04;
+                el.obj.position.x = el.startX + Math.cos(time * 1.2 + idx) * 0.02;
+            });
+            
+            // Brilho suave da tela
+            const intensity = 0.25 + Math.sin(time * 2.5) * 0.08;
+            screenMaterial.emissiveIntensity = intensity;
+            
+            // Movimento das partículas de fundo
+            particles.rotation.y += 0.0005;
+            
+            // Luz colorida suave oscilante
+            colorLight.intensity = 0.35 + Math.sin(time * 1.2) * 0.08;
+            rimLight.intensity = 0.4 + Math.sin(time * 1.8) * 0.05;
+            
+            // Renderização
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Controle de auto-rotação
+        let autoRotateTimeout;
+        controls.addEventListener('start', () => {
+            controls.autoRotate = false;
+            if (autoRotateTimeout) clearTimeout(autoRotateTimeout);
+        });
+        
+        controls.addEventListener('end', () => {
+            autoRotateTimeout = setTimeout(() => {
+                controls.autoRotate = true;
+            }, 4000);
+        });
+        
+        // Redimensionamento
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // ========== ESQUEMAS DE CORES ==========
+        window.changeColorScheme = (scheme) => {
+            const schemes = {
+                pastel: { cloud: ['#FFB7B2', '#B5EAD7', '#C7CEEA', '#FFD6A5', '#FDFFB6'], ring: '#FFB7B2', ring2: '#B5EAD7', ring3: '#C7CEEA' },
+                soft: { cloud: ['#FFD6A5', '#FDFFB6', '#CAFFBF', '#FFC8DD', '#B8F2E6'], ring: '#FFD6A5', ring2: '#FDFFB6', ring3: '#CAFFBF' },
+                lavender: { cloud: ['#E8D1FF', '#B8F2E6', '#FFC8DD', '#D4E0FF', '#C5E0D4'], ring: '#E8D1FF', ring2: '#B8F2E6', ring3: '#FFC8DD' },
+                sunny: { cloud: ['#A0C4FF', '#FDCA40', '#F79824', '#FFB7B2', '#9BF6FF'], ring: '#FDCA40', ring2: '#F79824', ring3: '#A0C4FF' },
+                natural: { cloud: ['#CDEAC0', '#F9B5AC', '#FFD166', '#B5EAD7', '#FFC8DD'], ring: '#CDEAC0', ring2: '#F9B5AC', ring3: '#FFD166' }
+            };
+            
+            const selected = schemes[scheme];
+            if (selected) {
+                const cloudMeshes = cloudGroup.children.filter(c => c.isMesh && c.geometry.type === 'SphereGeometry' && c !== cloudGroup.children[0]);
+                cloudMeshes.forEach((mesh, idx) => {
+                    const color = selected.cloud[idx % selected.cloud.length];
+                    mesh.material.color.setHex(parseInt(color.substring(1), 16));
+                    mesh.material.emissive.setHex(parseInt(color.substring(1), 16));
+                });
+                
+                ring1.material.color.setHex(parseInt(selected.ring.substring(1), 16));
+                ring1.material.emissive.setHex(parseInt(selected.ring.substring(1), 16));
+                ring2.material.color.setHex(parseInt(selected.ring2.substring(1), 16));
+                ring2.material.emissive.setHex(parseInt(selected.ring2.substring(1), 16));
+                ring3.material.color.setHex(parseInt(selected.ring3.substring(1), 16));
+                ring3.material.emissive.setHex(parseInt(selected.ring3.substring(1), 16));
+            }
+        };
+        
+        // Console welcome
+        console.log('%c🎨 Logotipo 3D | DEV SYSTEM + APPS + DESIGN GRÁFICO', 'color: #6C5CE7; font-size: 14px; font-weight: bold;');
+        console.log('%cEstilo Guache Claro | Desenvolvimento Criativo', 'color: #00B894; font-size: 12px;');
+    </script>
+</body>
+</html>

@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Logotipo 3D - DevSystem, Apps & Design Gráfico | Estilo Guache</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', 'Poppins', 'Montserrat', 'Arial', sans-serif;
+        }
+
+        /* Interface de controle */
+        .controls-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(12px);
+            padding: 12px 18px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            z-index: 100;
+            text-align: center;
+            font-size: 12px;
+            pointer-events: auto;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .controls-panel h3 {
+            margin: 0 0 8px 0;
+            font-size: 13px;
+            font-weight: 500;
+            color: #fff;
+        }
+
+        .color-schemes {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.5);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .color-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        .info-text {
+            font-size: 10px;
+            color: rgba(255,255,255,0.7);
+            margin-top: 6px;
+        }
+
+        .instruction {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.6);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            z-index: 100;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            font-weight: 400;
+        }
+
+        @media (max-width: 768px) {
+            .controls-panel { padding: 8px 12px; }
+            .color-btn { width: 28px; height: 28px; }
+            .instruction { font-size: 9px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls-panel">
+        <h3>🎨 Paletas Guache</h3>
+        <div class="color-schemes">
+            <div class="color-btn" style="background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #FFE66D);" onclick="changeColorScheme('vibrant')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #FF8C42, #FF3C38, #F9D423);" onclick="changeColorScheme('warm')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #6C5CE7, #A8E6CF, #FFD93D);" onclick="changeColorScheme('cool')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #FF9A9E, #FECFEF, #A1C4FD);" onclick="changeColorScheme('pastel')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #F12711, #F5AF19, #B224EF);" onclick="changeColorScheme('sunset')"></div>
+            <div class="color-btn" style="background: linear-gradient(135deg, #11998E, #38EF7D, #FFD700);" onclick="changeColorScheme('nature')"></div>
+        </div>
+        <div class="info-text">🖱️ Arraste para girar | Scroll para zoom</div>
+    </div>
+    <div class="instruction">
+        🎨 Logotipo 3D | DevSystem + Apps + Design Gráfico | Estilo Guache
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+        import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+        // Configuração da cena - Fundo colorido com gradiente via textura
+        const scene = new THREE.Scene();
+        
+        // Criar fundo com gradiente colorido
+        const canvas = document.createElement('canvas');
+        canvas.width = 512;
+        canvas.height = 512;
+        const ctx = canvas.getContext('2d');
+        
+        const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#1a0b2e');
+        gradient.addColorStop(0.3, '#2d1b4e');
+        gradient.addColorStop(0.6, '#1e3a5f');
+        gradient.addColorStop(1, '#0d2b3e');
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Adicionar textura de pinceladas (efeito guache no fundo)
+        for (let i = 0; i < 300; i++) {
+            ctx.fillStyle = `rgba(${100 + Math.random() * 155}, ${80 + Math.random() * 175}, ${150 + Math.random() * 105}, ${0.05 + Math.random() * 0.1})`;
+            ctx.beginPath();
+            ctx.ellipse(
+                Math.random() * canvas.width,
+                Math.random() * canvas.height,
+                Math.random() * 30 + 10,
+                Math.random() * 20 + 8,
+                0,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+        }
+        
+        const backgroundTexture = new THREE.CanvasTexture(canvas);
+        scene.background = backgroundTexture;
+        scene.backgroundIntensity = 1;
+
+        // Câmera
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(4.5, 3.2, 7.2);
+        camera.lookAt(0, 0.2, 0);
+
+        // Renderers
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+
+        const labelRenderer = new CSS2DRenderer();
+        labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        labelRenderer.domElement.style.position = 'absolute';
+        labelRenderer.domElement.style.top = '0px';
+        labelRenderer.domElement.style.left = '0px';
+        labelRenderer.domElement.style.pointerEvents = 'none';
+        document.body.appendChild(labelRenderer.domElement);
+
+        // Controles
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.06;
+        controls.autoRotate = true;
+        controls.autoRotateSpeed = 1.1;
+        controls.enableZoom = true;
+        controls.enablePan = true;
+        controls.zoomSpeed = 1.0;
+        controls.target.set(0, 0.3, 0);
+
+        // ========== ILUMINAÇÃO DRAMÁTICA ==========
+        // Luz ambiente
+        const ambientLight = new THREE.AmbientLight(0x404060, 0.55);
+        scene.add(ambientLight);
+        
+        // Luz principal direcional
+        const mainLight = new THREE.DirectionalLight(0xfff0e0, 1.0);
+        mainLight.position.set(5, 7, 4);
+        mainLight.castShadow = true;
+        mainLight.receiveShadow = true;
+        mainLight.shadow.mapSize.width = 1024;
+        mainLight.shadow.mapSize.height = 1024;
+        scene.add(mainLight);
+        
+        // Luz de preenchimento colorida
+        const fillLight = new THREE.PointLight(0x8866ff, 0.5);
+        fillLight.position.set(2, 2, 3);
+        scene.add(fillLight);
+        
+        // Luz traseira
+        const backLight = new THREE.PointLight(0xff8866, 0.45);
+        backLight.position.set(-1.5, 2, -4);
+        scene.add(backLight);
+        
+        // Luz lateral móvel
+        const movingLight = new THREE.PointLight(0xff66aa, 0.5);
+        movingLight.position.set(3, 2, 2);
+        scene.add(movingLight);
+        
+        // Luz de rim
+        const rimLight = new THREE.PointLight(0xffaa66, 0.45);
+        rimLight.position.set(-2.5, 2.8, 2.2);
+        scene.add(rimLight);
+        
+        // Luz inferior
+        const bottomLight = new THREE.PointLight(0x44aaff, 0.35);
+        bottomLight.position.set(0, -1.8, 0);
+        scene.add(bottomLight);
+        
+        // ========== PARTÍCULAS COLORIDAS (estilo guache) ==========
+        const particleCount = 800;
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlePositions = new Float32Array(particleCount * 3);
+        const particleColors = new Float32Array(particleCount * 3);
+        
+        for (let i = 0; i < particleCount; i++) {
+            particlePositions[i*3] = (Math.random() - 0.5) * 20;
+            particlePositions[i*3+1] = (Math.random() - 0.5) * 12 + 1;
+            particlePositions[i*3+2] = (Math.random() - 0.5) * 18 - 6;
+            
+            const colorSchemes = [
+                [0xFF6B6B, 0xFF8C42, 0xFFE66D],
+                [0x6C5CE7, 0xA8E6CF, 0xFFD93D],
+                [0xFF9A9E, 0xFECFEF, 0xA1C4FD]
+            ];
+            const scheme = colorSchemes[Math.floor(Math.random() * colorSchemes.length)];
+            const col = scheme[Math.floor(Math.random() * scheme.length)];
+            const r = ((col >> 16) & 255) / 255;
+            const g = ((col >> 8) & 255) / 255;
+            const b = (col & 255) / 255;
+            particleColors[i*3] = r;
+            particleColors[i*3+1] = g;
+            particleColors[i*3+2] = b;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.045,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.5,
+            blending: THREE.AdditiveBlending
+        });
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+
+        // ========== GRUPO PRINCIPAL ==========
+        const logoGroup = new THREE.Group();
+
+        // ===== 1. NUVEM ESTILO GUACHE (formas orgânicas) =====
+        const cloudGroup = new THREE.Group();
+        
+        const cloudColors = ['#FF6B6B', '#FF8C42', '#FFE66D', '#4ECDC4', '#6C5CE7'];
+        
+        const cloudLayers = [
+            { pos: [0, 0.58, 0], size: [1.7, 0.38, 1.1], color: '#FF6B6B', opacity: 0.92 },
+            { pos: [0.9, 0.38, 0.12], size: [0.95, 0.32, 0.9], color: '#FF8C42', opacity: 0.9 },
+            { pos: [-0.9, 0.38, 0.12], size: [0.95, 0.32, 0.9], color: '#FFE66D', opacity: 0.9 },
+            { pos: [0, 0.22, 0.25], size: [1.4, 0.34, 1.2], color: '#4ECDC4', opacity: 0.88 },
+            { pos: [0, 0.02, 0.18], size: [1.9, 0.32, 1.3], color: '#6C5CE7', opacity: 0.85 },
+            { pos: [0.55, 0.5, -0.12], size: [0.7, 0.28, 0.65], color: '#F9D423', opacity: 0.87 },
+            { pos: [-0.55, 0.5, -0.12], size: [0.7, 0.28, 0.65], color: '#A8E6CF', opacity: 0.87 }
+        ];
+        
+        cloudLayers.forEach(layer => {
+            const geometry = new THREE.BoxGeometry(layer.size[0], layer.size[1], layer.size[2]);
+            const material = new THREE.MeshStandardMaterial({
+                color: layer.color,
+                roughness: 0.28,
+                metalness: 0.04,
+                emissive: layer.color,
+                emissiveIntensity: 0.1,
+                transparent: true,
+                opacity: layer.opacity
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(layer.pos[0], layer.pos[1], layer.pos[2]);
+            mesh.castShadow = true;
+            mesh.receiveShadow = false;
+            cloudGroup.add(mesh);
+        });
+        
+        // Detalhes de textura (camadas finas)
+        const textureDetails = [
+            { pos: [0.4, 0.52, -0.2], size: [0.5, 0.08, 0.4], color: '#FFB7B2' },
+            { pos: [-0.4, 0.52, -0.2], size: [0.5, 0.08, 0.4], color: '#B5EAD7' },
+            { pos: [0, -0.08, 0.4], size: [1.2, 0.08, 0.5], color: '#C7CEEA' }
+        ];
+        
+        textureDetails.forEach(detail => {
+            const geo = new THREE.BoxGeometry(detail.size[0], detail.size[1], detail.size[2]);
+            const mat = new THREE.MeshStandardMaterial({
+                color: detail.color,
+                roughness: 0.35,
+                emissive: detail.color,
+                emissiveIntensity: 0.06,
+                transparent: true,
+                opacity: 0.75
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(detail.pos[0], detail.pos[1], detail.pos[2]);
+            cloudGroup.add(mesh);
+        });
+        
+        cloudGroup.position.y = 1.15;
+        cloudGroup.position.x = 0;
+        logoGroup.add(cloudGroup);
+
+        // ===== 2. NOTEBOOK 3D =====
+        const laptopGroup = new THREE.Group();
+        
+        // Base do notebook
+        const baseGeometry = new THREE.BoxGeometry(1.62, 0.08, 1.24);
+        const baseMaterial = new THREE.MeshStandardMaterial({
+            color: '#D4A574',
+            roughness: 0.4,
+            metalness: 0.12,
+            emissive: '#B8860B',
+            emissiveIntensity: 0.04
+        });
+        const laptopBase = new THREE.Mesh(baseGeometry, baseMaterial);
+        laptopBase.position.y = -0.2;
+        laptopBase.castShadow = true;
+        laptopBase.receiveShadow = true;
+        laptopGroup.add(laptopBase);
+        
+        // Superfície do teclado
+        const keyboardBaseGeometry = new THREE.BoxGeometry(1.44, 0.025, 1.04);
+        const keyboardBaseMat = new THREE.MeshStandardMaterial({
+            color: '#2C2C2C',
+            roughness: 0.5,
+            metalness: 0.1
+        });
+        const keyboardBaseMesh = new THREE.Mesh(keyboardBaseGeometry, keyboardBaseMat);
+        keyboardBaseMesh.position.y = -0.145;
+        keyboardBaseMesh.castShadow = true;
+        laptopGroup.add(keyboardBaseMesh);
+        
+        // Teclas
+        const keyColorsLaptop = ['#444', '#3D3D3D', '#4A4A4A'];
+        for (let i = -0.6; i <= 0.62; i += 0.095) {
+            for (let j = -0.46; j <= 0.48; j += 0.095) {
+                if (Math.abs(i) < 0.12 && Math.abs(j) < 0.12) continue;
+                if (Math.random() > 0.72) continue;
+                const keyGeo = new THREE.BoxGeometry(0.075, 0.018, 0.075);
+                const keyMat = new THREE.MeshStandardMaterial({ 
+                    color: keyColorsLaptop[Math.floor(Math.random() * keyColorsLaptop.length)],
+                    roughness: 0.3,
+                    metalness: 0.15
+                });
+                const key = new THREE.Mesh(keyGeo, keyMat);
+                key.position.set(i, -0.13, j);
+                key.castShadow = true;
+                laptopGroup.add(key);
+            }
+        }
+        
+        // Touchpad
+        const touchpadGeo = new THREE.BoxGeometry(0.5, 0.014, 0.7);
+        const touchpadMat = new THREE.MeshStandardMaterial({ color: '#3A3A3A', roughness: 0.35, metalness: 0.2 });
+        const touchpad = new THREE.Mesh(touchpadGeo, touchpadMat);
+        touchpad.position.set(0.52, -0.135, 0.1);
+        laptopGroup.add(touchpad);
+        
+        // Tela do notebook
+        const screenGroup = new THREE.Group();
+        
+        // Moldura
+        const bezelGeometry = new THREE.BoxGeometry(1.48, 1.08, 0.05);
+        const bezelMaterial = new THREE.MeshStandardMaterial({
+            color: '#1a1a2e',
+            roughness: 0.3,
+            metalness: 0.25
+        });
+        const bezel = new THREE.Mesh(bezelGeometry, bezelMaterial);
+        bezel.position.set(0, 0.47, -0.032);
+        bezel.castShadow = true;
+        screenGroup.add(bezel);
+        
+        // Tela
+        const screenGeometry = new THREE.BoxGeometry(1.38, 0.98, 0.028);
+        const screenMaterial = new THREE.MeshStandardMaterial({
+            color: '#0a0a2a',
+            roughness: 0.15,
+            metalness: 0.35,
+            emissive: '#1a4a8a',
+            emissiveIntensity: 0.3
+        });
+        const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+        screen.position.set(0, 0.47, -0.01);
+        screen.castShadow = true;
+        screenGroup.add(screen);
+        
+        // Conteúdo da tela - linhas de código coloridas
+        const codeColors = ['#FF6B6B', '#4ECDC4', '#FFE66D', '#FF8C42', '#6C5CE7', '#A8E6CF'];
+        const codeBlocks = [
+            { x: -0.52, y: 0.58, w: 0.45, h: 0.022, color: '#FF6B6B' },
+            { x: -0.52, y: 0.52, w: 0.37, h: 0.022, color: '#4ECDC4' },
+            { x: -0.52, y: 0.46, w: 0.52, h: 0.022, color: '#FFE66D' },
+            { x: -0.52, y: 0.40, w: 0.32, h: 0.022, color: '#FF8C42' },
+            { x: -0.52, y: 0.34, w: 0.48, h: 0.022, color: '#6C5CE7' },
+            { x: -0.52, y: 0.28, w: 0.41, h: 0.022, color: '#A8E6CF' },
+            { x: -0.52, y: 0.22, w: 0.35, h: 0.022, color: '#F9D423' },
+            { x: -0.52, y: 0.16, w: 0.29, h: 0.022, color: '#FF9A9E' }
+        ];
+        
+        codeBlocks.forEach(block => {
+            const geo = new THREE.BoxGeometry(block.w, block.h, 0.008);
+            const mat = new THREE.MeshStandardMaterial({
+                color: block.color,
+                emissive: block.color,
+                emissiveIntensity: 0.4,
+                roughness: 0.2
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            mesh.position.set(block.x + block.w/2, block.y, 0.012);
+            screenGroup.add(mesh);
+        });
+        
+        // Ícone de código </>
+        const codeMat = new THREE.MeshStandardMaterial({ color: '#00FF88', emissive: '#00FF88', emissiveIntensity: 0.35 });
+        const slash1 = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.055, 0.008), codeMat);
+        slash1.position.set(0.5, 0.82, 0.014);
+        const slash2 = new THREE.Mesh(new THREE.BoxGeometry(0.055, 0.055, 0.008), codeMat);
+        slash2.position.set(0.58, 0.82, 0.014);
+        screenGroup.add(slash1);
+        screenGroup.add(slash2);
+        
+        // Ícone de pincel (Design)
+        const brushMat = new THREE.MeshStandardMaterial({ color: '#FF8A65', emissive: '#FF8A65', emissiveIntensity: 0.3 });
+        const brushHandle = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.09, 0.008), brushMat);
+        brushHandle.position.set(-0.54, 0.82, 0.014);
+        const brushTip = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.045, 0.008), brushMat);
+        brushTip.position.set(-0.54, 0.755, 0.014);
+        screenGroup.add(brushHandle);
+        screenGroup.add(brushTip);
+        
+        // Ícone de app
+        const appMat = new THREE.MeshStandardMaterial({ color: '#FFD93D', emissive: '#FFD93D', emissiveIntensity: 0.3 });
+        const appIcon = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.11, 0.008), appMat);
+        appIcon.position.set(0.58, 0.9, 0.014);
+        screenGroup.add(appIcon);
+        
+        screenGroup.position.y = 0.23;
+        screenGroup.rotation.x = -0.76;
+        screenGroup.position.z = -0.44;
+        laptopGroup.add(screenGroup);
+        
+        laptopGroup.position.y = -0.3;
+        laptopGroup.position.x = 0;
+        laptopGroup.position.z = 0.4;
+        logoGroup.add(laptopGroup);
+
+        // ===== 3. ELEMENTOS FLUTUANTES =====
+        const floatingLabels = [
+            { text: '🚀 DESENVOLVIMENTO', color: '#FF6B6B', pos: [-1.4, 0.9, 0.95], size: '14px' },
+            { text: '📱 APLICATIVOS', color: '#4ECDC4', pos: [1.45, 0.75, 0.85], size: '14px' },
+            { text: '🎨 DESIGN GRÁFICO', color: '#FFE66D', pos: [0, 1.35, -1.1], size: '14px' },
+            { text: '⚡ UI/UX', color: '#FF8C42', pos: [-1.25, -0.3, 1.1], size: '12px' },
+            { text: '💻 SOLUÇÕES', color: '#6C5CE7', pos: [1.3, -0.25, 1.0], size: '12px' }
+        ];
+        
+        const floatingElements = [];
+        
+        floatingLabels.forEach(labelData => {
+            const div = document.createElement('div');
+            div.textContent = labelData.text;
+            div.style.color = labelData.color;
+            div.style.fontSize = labelData.size;
+            div.style.fontWeight = '600';
+            div.style.fontFamily = "'Poppins', 'Segoe UI', Arial";
+            div.style.background = 'rgba(0,0,0,0.7)';
+            div.style.padding = '5px 14px';
+            div.style.borderRadius = '30px';
+            div.style.backdropFilter = 'blur(10px)';
+            div.style.border = `1px solid ${labelData.color}`;
+            div.style.boxShadow = '0 2px 15px rgba(0,0,0,0.2)';
+            div.style.letterSpacing = '0.5px';
+            
+            const label = new CSS2DObject(div);
+            label.position.set(labelData.pos[0], labelData.pos[1], labelData.pos[2]);
+            logoGroup.add(label);
+            floatingElements.push({ obj: label, startY: labelData.pos[1], startX: labelData.pos[0], startZ: labelData.pos[2] });
+        });
+        
+        // ===== 4. ANÉIS ORBITAIS DECORATIVOS =====
+        const ringGeometry1 = new THREE.TorusGeometry(1.45, 0.025, 96, 200);
+        const ringMaterial1 = new THREE.MeshStandardMaterial({
+            color: '#FF6B6B',
+            roughness: 0.25,
+            metalness: 0.6,
+            emissive: '#FF6B6B',
+            emissiveIntensity: 0.2,
+            transparent: true,
+            opacity: 0.7
+        });
+        const ring1 = new THREE.Mesh(ringGeometry1, ringMaterial1);
+        ring1.rotation.x = Math.PI / 2 + 0.18;
+        ring1.rotation.z = Date.now() * 0.0008;
+        ring1.position.y = 0.12;
+        logoGroup.add(ring1);
+        
+        const ringGeometry2 = new THREE.TorusGeometry(1.78, 0.02, 96, 200);
+        const ringMaterial2 = new THREE.MeshStandardMaterial({
+            color: '#4ECDC4',
+            roughness: 0.25,
+            metalness: 0.6,
+            emissive: '#4ECDC4',
+            emissiveIntensity: 0.18,
+            transparent: true,
+            opacity: 0.65
+        });
+        const ring2 = new THREE.Mesh(ringGeometry2, ringMaterial2);
+        ring2.rotation.x = Math.PI / 2 + 0.32;
+        ring2.rotation.z = -Date.now() * 0.00065;
+        ring2.position.y = 0.12;
+        logoGroup.add(ring2);
+        
+        const ringGeometry3 = new THREE.TorusGeometry(1.1, 0.018, 96, 200);
+        const ringMaterial3 = new THREE.MeshStandardMaterial({
+            color: '#FFE66D',
+            roughness: 0.25,
+            metalness: 0.6,
+            emissive: '#FFE66D',
+            emissiveIntensity: 0.15,
+            transparent: true,
+            opacity: 0.68
+        });
+        const ring3 = new THREE.Mesh(ringGeometry3, ringMaterial3);
+        ring3.rotation.x = Math.PI / 2 + 0.08;
+        ring3.rotation.z = Date.now() * 0.001;
+        ring3.position.y = 0.12;
+        logoGroup.add(ring3);
+        
+        // ===== 5. TEXTO PRINCIPAL =====
+        const mainTitleDiv = document.createElement('div');
+        mainTitleDiv.innerHTML = `
+            <div style="text-align: center; font-family: 'Poppins', 'Segoe UI', Arial;">
+                <span style="font-size: 32px; font-weight: 800; background: linear-gradient(135deg, #FF6B6B, #4ECDC4, #FFE66D); -webkit-background-clip: text; background-clip: text; color: transparent;">DEV</span>
+                <span style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #FF8C42, #F9D423); -webkit-background-clip: text; background-clip: text; color: transparent;">SYSTEM</span>
+                <span style="font-size: 24px; font-weight: 600; color: rgba(255,255,255,0.5); margin: 0 6px;">+</span>
+                <span style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #6C5CE7, #A8E6CF); -webkit-background-clip: text; background-clip: text; color: transparent;">APPS</span>
+                <span style="font-size: 24px; font-weight: 600; color: rgba(255,255,255,0.5); margin: 0 6px;">&</span>
+                <span style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #FF9A9E, #FECFEF); -webkit-background-clip: text; background-clip: text; color: transparent;">DESIGN</span>
+                <br>
+                <span style="font-size: 13px; letter-spacing: 5px; background: linear-gradient(135deg, #FFD93D, #FF8C42); -webkit-background-clip: text; background-clip: text; color: transparent; font-weight: 500;">CREATIVE TECHNOLOGY</span>
+            </div>
+        `;
+        mainTitleDiv.style.textShadow = '0 2px 10px rgba(0,0,0,0.3)';
+        const mainTitle = new CSS2DObject(mainTitleDiv);
+        mainTitle.position.set(0, -1.0, 0);
+        logoGroup.add(mainTitle);
+        
+        scene.add(logoGroup);
+        
+        // Plano de sombra
+        const shadowPlane = new THREE.Mesh(
+            new THREE.PlaneGeometry(6, 6),
+            new THREE.MeshStandardMaterial({
+                color: 0x0a0a2a,
+                roughness: 0.7,
+                metalness: 0.1,
+                transparent: true,
+                opacity: 0.35
+            })
+        );
+        shadowPlane.rotation.x = -Math.PI / 2;
+        shadowPlane.position.y = -0.9;
+        shadowPlane.receiveShadow = true;
+        scene.add(shadowPlane);
+        
+        // ========== ANIMAÇÕES ==========
+        let time = 0;
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.016;
+            
+            if (controls.autoRotate) {
+                controls.update();
+            }
+            
+            // Animações dos anéis
+            ring1.rotation.z += 0.0075;
+            ring2.rotation.z -= 0.006;
+            ring3.rotation.z += 0.0055;
+            
+            // Animações flutuantes
+            floatingElements.forEach((el, idx) => {
+                el.obj.position.y = el.startY + Math.sin(time * 1.3 + idx) * 0.04;
+                el.obj.position.x = el.startX + Math.cos(time * 1.0 + idx) * 0.018;
+            });
+            
+            // Brilho da tela
+            const intensity = 0.3 + Math.sin(time * 2.5) * 0.1;
+            screenMaterial.emissiveIntensity = intensity;
+            
+            // Luzes móveis
+            movingLight.position.x = 3 + Math.sin(time * 0.8) * 1.2;
+            movingLight.intensity = 0.5 + Math.sin(time * 1.5) * 0.15;
+            
+            rimLight.intensity = 0.45 + Math.sin(time * 1.2) * 0.1;
+            fillLight.intensity = 0.5 + Math.sin(time * 0.9) * 0.1;
+            
+            // Partículas
+            particles.rotation.y += 0.0008;
+            particles.rotation.x += 0.0004;
+            
+            // Atualizar textura de fundo (animação suave)
+            if (Math.random() < 0.02) {
+                backgroundTexture.needsUpdate = true;
+            }
+            
+            renderer.render(scene, camera);
+            labelRenderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Controle de auto-rotação
+        let autoRotateTimeout;
+        controls.addEventListener('start', () => {
+            controls.autoRotate = false;
+            if (autoRotateTimeout) clearTimeout(autoRotateTimeout);
+        });
+        
+        controls.addEventListener('end', () => {
+            autoRotateTimeout = setTimeout(() => {
+                controls.autoRotate = true;
+            }, 4000);
+        });
+        
+        // Redimensionamento
+        window.addEventListener('resize', onWindowResize, false);
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            labelRenderer.setSize(window.innerWidth, window.innerHeight);
+        }
+        
+        // ========== ESQUEMAS DE CORES ==========
+        window.changeColorScheme = (scheme) => {
+            const schemes = {
+                vibrant: { cloud: ['#FF6B6B', '#FF8C42', '#FFE66D', '#4ECDC4', '#6C5CE7'], ring: '#FF6B6B', ring2: '#4ECDC4', ring3: '#FFE66D' },
+                warm: { cloud: ['#FF8C42', '#FF3C38', '#F9D423', '#FF6B6B', '#FFB347'], ring: '#FF8C42', ring2: '#FF3C38', ring3: '#F9D423' },
+                cool: { cloud: ['#6C5CE7', '#A8E6CF', '#FFD93D', '#4ECDC4', '#5D9CEC'], ring: '#6C5CE7', ring2: '#A8E6CF', ring3: '#FFD93D' },
+                pastel: { cloud: ['#FF9A9E', '#FECFEF', '#A1C4FD', '#B8E4F0', '#D4E0FF'], ring: '#FF9A9E', ring2: '#FECFEF', ring3: '#A1C4FD' },
+                sunset: { cloud: ['#F12711', '#F5AF19', '#B224EF', '#FF512F', '#DD2476'], ring: '#F12711', ring2: '#F5AF19', ring3: '#B224EF' },
+                nature: { cloud: ['#11998E', '#38EF7D', '#FFD700', '#4ECDC4', '#A8E6CF'], ring: '#11998E', ring2: '#38EF7D', ring3: '#FFD700' }
+            };
+            
+            const selected = schemes[scheme];
+            if (selected) {
+                const cloudLayersMesh = cloudGroup.children.filter(c => c.isMesh);
+                cloudLayersMesh.forEach((layer, idx) => {
+                    const color = selected.cloud[idx % selected.cloud.length];
+                    layer.material.color.setHex(parseInt(color.substring(1), 16));
+                    layer.material.emissive.setHex(parseInt(color.substring(1), 16));
+                });
+                
+                ring1.material.color.setHex(parseInt(selected.ring.substring(1), 16));
+                ring1.material.emissive.setHex(parseInt(selected.ring.substring(1), 16));
+                ring2.material.color.setHex(parseInt(selected.ring2.substring(1), 16));
+                ring2.material.emissive.setHex(parseInt(selected.ring2.substring(1), 16));
+                ring3.material.color.setHex(parseInt(selected.ring3.substring(1), 16));
+                ring3.material.emissive.setHex(parseInt(selected.ring3.substring(1), 16));
+                
+                // Atualizar cores dos textos flutuantes
+                const textColors = [selected.ring, selected.ring2, selected.ring3, selected.cloud[0], selected.cloud[1]];
+                floatingElements.forEach((el, idx) => {
+                    if (el.obj.element) {
+                        el.obj.element.style.color = textColors[idx % textColors.length];
+                        el.obj.element.style.borderColor = textColors[idx % textColors.length];
+                    }
+                });
+            }
+        };
+        
+        // Console
+        console.log('%c🎨 Logotipo 3D | DEV SYSTEM + APPS + DESIGN GRÁFICO', 'color: #FF6B6B; font-size: 16px; font-weight: bold;');
+        console.log('%cEstilo Guache | Fundo Colorido | Design Criativo', 'color: #4ECDC4; font-size: 13px;');
+    </script>
+</body>
+</html>

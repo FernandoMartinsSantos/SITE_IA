@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Formulário Colorido</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+
+        .form-container {
+            padding: 40px 30px;
+            background: #f8f9fa;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        .required {
+            color: #ff6b6b;
+            margin-left: 4px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: white;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .radio-group, .checkbox-group {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .radio-option, .checkbox-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-option input, .checkbox-option input {
+            width: auto;
+            margin: 0;
+        }
+
+        .radio-option label, .checkbox-option label {
+            margin: 0;
+            font-weight: normal;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .info-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .info-section h3 {
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95em;
+        }
+
+        .info-item i {
+            font-size: 1.2em;
+        }
+
+        /* Ícones simples usando emoji */
+        .icon {
+            font-size: 1.2em;
+        }
+
+        /* Mensagem de sucesso/erro */
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .form-container {
+                padding: 30px 20px;
+            }
+            
+            .radio-group, .checkbox-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📧 Entre em Contato</h1>
+            <p>Adoraríamos saber sua opinião! Preencha o formulário abaixo.</p>
+        </div>
+        
+        <div class="form-container">
+            <div id="messageBox" class="message"></div>
+            
+            <form id="contactForm">
+                <div class="form-group">
+                    <label>Nome completo <span class="required">*</span></label>
+                    <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>E-mail <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="tel" id="telefone" name="telefone" placeholder="(00) 00000-0000">
+                </div>
+                
+                <div class="form-group">
+                    <label>Assunto <span class="required">*</span></label>
+                    <select id="assunto" name="assunto" required>
+                        <option value="">Selecione um assunto</option>
+                        <option value="duvida">Dúvida</option>
+                        <option value="sugestao">Sugestão</option>
+                        <option value="reclamacao">Reclamação</option>
+                        <option value="parceria">Parceria</option>
+                        <option value="outro">Outro</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Como prefere ser contatado? <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" name="contato" value="email" id="contatoEmail" checked>
+                            <label for="contatoEmail">E-mail</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="contato" value="telefone" id="contatoTelefone">
+                            <label for="contatoTelefone">Telefone</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" name="contato" value="whatsapp" id="contatoWhatsapp">
+                            <label for="contatoWhatsapp">WhatsApp</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Mensagem <span class="required">*</span></label>
+                    <textarea id="mensagem" name="mensagem" placeholder="Digite sua mensagem aqui..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="newsletter" name="newsletter">
+                        <label for="newsletter">Desejo receber novidades e promoções por e-mail</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="checkbox-option">
+                        <input type="checkbox" id="politica" name="politica" required>
+                        <label for="politica">Li e aceito os <a href="#" style="color: #667eea;">termos de política de privacidade</a> <span class="required">*</span></label>
+                    </div>
+                </div>
+                
+                <button type="submit">📤 Enviar Mensagem</button>
+            </form>
+        </div>
+        
+        <div class="info-section">
+            <h3>📞 Outros Canais de Atendimento</h3>
+            <div class="contact-info">
+                <div class="info-item">
+                    <span class="icon">📱</span>
+                    <span>(11) 99999-9999</span>
+                </div>
+                <div class="info-item">
+                    <span class="icon">✉️</span>
+                    <span>contato@empresa.com</span>
+                </div>
+                <div class="info-item">
+                    <span class="icon">⏰</span>
+                    <span>Seg-Sex: 9h às 18h</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('contactForm');
+        const messageBox = document.getElementById('messageBox');
+
+        // Máscara simples para telefone
+        const telefoneInput = document.getElementById('telefone');
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value.length <= 2) {
+                    value = `(${value}`;
+                } else if (value.length <= 7) {
+                    value = `(${value.slice(0,2)}) ${value.slice(2)}`;
+                } else {
+                    value = `(${value.slice(0,2)}) ${value.slice(2,7)}-${value.slice(7,11)}`;
+                }
+            }
+            e.target.value = value;
+        });
+
+        // Validação de email
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Mostrar mensagem
+        function showMessage(type, text) {
+            messageBox.className = `message ${type}`;
+            messageBox.textContent = text;
+            
+            setTimeout(() => {
+                messageBox.className = 'message';
+            }, 5000);
+        }
+
+        // Envio do formulário
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Coletar dados
+            const nome = document.getElementById('nome').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const telefone = document.getElementById('telefone').value.trim();
+            const assunto = document.getElementById('assunto').value;
+            const contato = document.querySelector('input[name="contato"]:checked').value;
+            const mensagem = document.getElementById('mensagem').value.trim();
+            const newsletter = document.getElementById('newsletter').checked;
+            const politica = document.getElementById('politica').checked;
+            
+            // Validações
+            if (!nome) {
+                showMessage('error', '❌ Por favor, preencha seu nome.');
+                return;
+            }
+            
+            if (!email) {
+                showMessage('error', '❌ Por favor, preencha seu e-mail.');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showMessage('error', '❌ Por favor, insira um e-mail válido.');
+                return;
+            }
+            
+            if (!assunto) {
+                showMessage('error', '❌ Por favor, selecione um assunto.');
+                return;
+            }
+            
+            if (!mensagem) {
+                showMessage('error', '❌ Por favor, digite sua mensagem.');
+                return;
+            }
+            
+            if (!politica) {
+                showMessage('error', '❌ Você precisa aceitar os termos de política de privacidade.');
+                return;
+            }
+            
+            // Se passou por todas as validações
+            // Aqui você normalmente enviaria os dados para o servidor via AJAX
+            console.log({
+                nome, email, telefone, assunto, contato, mensagem, newsletter, politica
+            });
+            
+            // Simular envio bem-sucedido
+            showMessage('success', '✅ Mensagem enviada com sucesso! Entraremos em contato em breve.');
+            
+            // Opcional: limpar formulário
+            // form.reset();
+            
+            // Ou redirecionar após 2 segundos
+            setTimeout(() => {
+                // window.location.href = 'obrigado.html';
+            }, 2000);
+        });
+        
+        // Validação em tempo real para o campo de email
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value.trim();
+            if (email && !validateEmail(email)) {
+                this.style.borderColor = '#ff6b6b';
+                showMessage('error', '❌ Por favor, insira um e-mail válido.');
+            } else {
+                this.style.borderColor = '#e0e0e0';
+            }
+        });
+        
+        // Reset do estilo do email quando começar a digitar
+        document.getElementById('email').addEventListener('input', function() {
+            this.style.borderColor = '#e0e0e0';
+            if (messageBox.className.includes('error')) {
+                messageBox.className = 'message';
+            }
+        });
+    </script>
+</body>
+</html>
